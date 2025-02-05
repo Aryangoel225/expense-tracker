@@ -3,12 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Expense Tracker App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-    
+    <h1>Expense Tracker App</h1>
+    <div class="input-section">
+       <label for="categories">Categories types</label> 
+       <select name="categories" id="categories">
+        <option value="home">Home & Utilities</option>
+        <option value="transportation">Transportation</option>
+        <option value="groceries">Groceries</option>
+        <option value="restaurants">Restaurants</option>
+        <option value="health">Health</option>
+        <option value="shopping">Shopping</option>
+       </select>
+      
+       <label for="amount">Amount (USD): </label> 
+       <input type="number" id="amount" name="amount">
+
+       <label for="date">Date: </label>
+       <input type="data" id="date">
+
+       <button id="addBtn">Add</button>
+    </div>
+    <div class="expenses-list">
+        <h2>Expenses List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="expense-table-body">
+                
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Total</td>
+                    <td id="total-amount"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     <script src="index.js"></script>
 </body>
 </html>
