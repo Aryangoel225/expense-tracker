@@ -92,6 +92,8 @@ addBtn.addEventListener('click', function(){
     const amountValue = parseFloat(amount.value);
     const dateValue = date.value;
 
+    
+
     // check for valid input
     if(isNaN(amountValue) || !dateValue ){
         alert("Please enter a valid amount or date");
@@ -191,8 +193,69 @@ function renderExpensetable(){
         });
 
     expenseTableBody.append(newRow);
+
 }
 
 
+
+function sortAmount(arr){
+    for (let i = 1; i < arr.length; i++) {
+        let temp = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j].getAmount() > temp.getAmount()) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = temp;
+    }
+}
+
+function sortName(arr){
+    for (let i = 1; i < arr.length; i++) {
+        let temp = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j].localeCompare(temp) > 0) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = temp;
+    }
+  
+function dateStrToObj(dateStr){
+    let newDateValue = dateStr;
+    const monthStr = newDateValue.substring(0, newDateValue.indexOf("/"));
+    newDateValue = substring(monthStr.length - 1);
+    const month = parseInt(monthStr);
+    const dayStr = newDateValue.substring(0, newDateValue.indexOf("/"));
+    newDateValue = substring(dayStr.length - 1);
+    const day = parseInt(dayStr);
+    const yearStr = newDateValue;
+    const year = parseInt(yearStr);
+    const dateObj = {month, day, year};
+    return dateObj;
+}
+
+function sortDate(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let temp = arr[i];
+        let j = i - 1;
+
+        while (j >= 0 && compareDates(arr[j].getDate(), temp.getDate()) > 0) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = temp;
+    }
+}
+
+function compareDates(date1, date2) {
+    if (date1.getYear() !== date2.getYear()) {
+        return date1.getYear() - date2.getYear();
+    }
+    if (date1.getMonth() !== date2.getMonth()) {
+        return date1.getMonth() - date2.getMonth();
+    }
+    return date1.getDay() - date2.getDay();
+}
 
 
