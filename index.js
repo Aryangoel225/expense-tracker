@@ -9,7 +9,77 @@ const date = document.getElementById("date");
 const addBtn = document.getElementById("addBtn");
 const expenseTableBody = document.getElementById("expense-table-body");
 const totalAmountCell = document.getElementById("total-amount");
+const ul = document.querySelector(".money-stats .details ul");
 
+const chartData = {
+    labels: ["Home & Utilities", "Transportation", "Groceries", "Restaurants", "Health", "Shopping"],
+    data: [0, 0, 0, 0, 0, 0],
+};
+
+
+// create a function fo fitler by espense through categories 
+function filterExpense(name){
+    let sum = 0;
+    for(let i = 0; i < expenses.length; i++){
+        if (expenses[i].category === name) {
+            sum  += expenses[i].amount;
+        }
+    }
+    return sum;
+}
+
+// function to update chart data 
+function updateChartData(){
+    chartData.data = chartData.labels.map((label) => filterExpense(label));
+
+    // Update chart visualization
+    myChart.data.datasets[0].data = chartData.data;
+    myChart.update();  
+}
+
+
+// Initialize chart
+const myChart = new Chart(document.querySelector(".my-chart"), {
+    type: "doughnut",
+    data: {
+        labels: chartData.labels,
+        datasets: [
+            {
+                label: "Category Expense",
+                data: chartData.data,
+            },
+        ],
+    },
+    options: {
+        borderWidth: 10,
+        borderRadius: 2,
+        hoverborderWidth: 0,
+        plugins: {
+            legend: {
+                display: false,
+            }
+        }
+    }
+});
+
+
+
+const populateUl = () => {
+    // clear existing list items
+   ul.innerHTML = "";
+
+    chartData.labels.forEach((label, i) => {
+        const categorySum = chartData.data[i];
+        // calculate percentage relative to the totalAmount (guard against division by zero)
+        const percentage = totalAmount ? ((categorySum/ totalAmount) * 100).toFixed(2) : 0;
+
+      let li = document.createElement("li");
+      li.innerHTML = `${label}: <span class='percentage'>${percentage}%</span>`;
+      ul.appendChild(li);
+    });
+  };
+  
+populateUl();
 
 // add btn functions
 addBtn.addEventListener('click', function(){
@@ -25,7 +95,7 @@ addBtn.addEventListener('click', function(){
         return;
     }
     //  add expenses to the list
-    const expense = {category: categoryValue, amount: amountValue, data: dateValue};
+    const expense = {category: categoryValue, amount: amountValue, date: dateValue};
     expenses.push(expense);
     totalAmount += amountValue;
 
@@ -54,14 +124,23 @@ addBtn.addEventListener('click', function(){
         // Remove the row from the table
         newRow.remove();
 
+    // update chart data/ percentages
+    updateChartData();
+    populateUl();
+
     });
 
     // add new row
     expenseTableBody.append(newRow);
 
+    // update chart data/ percentages
+    updateChartData();
+    populateUl();
+
     //reset input fields 
     amount.value = "";
     date.value = "";
-
 });
+
+
 
