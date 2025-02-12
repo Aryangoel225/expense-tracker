@@ -10,6 +10,9 @@ const addBtn = document.getElementById("addBtn");
 const expenseTableBody = document.getElementById("expense-table-body");
 const totalAmountCell = document.getElementById("total-amount");
 const ul = document.querySelector(".money-stats .details ul");
+const sortByName = document.getElementById('sortByName');
+const sortByAmount = document.getElementById('sortByAmount');
+const sortByDate = document.getElementById('sortByDate');
 
 const chartData = {
     labels: ["Home & Utilities", "Transportation", "Groceries", "Restaurants", "Health", "Shopping"],
@@ -141,6 +144,55 @@ addBtn.addEventListener('click', function(){
     amount.value = "";
     date.value = "";
 });
+
+sortByName.addEventListener('click', function(){
+    const expensesCopy = [...expenses];
+    expenses = sortByName(expensesCopy);
+    renderExpensetable()
+});
+
+sortByAmount.addEventListener('click', function(){
+    const expensesCopy = [...expenses];
+    expenses = sortByAmount(expensesCopy);
+    renderExpensetable()
+});
+
+sortByDate.addEventListener('click', function(){
+    const expensesCopy = [...expenses];
+    expenses = sortByDate(expensesCopy);
+    renderExpensetable()
+});
+
+function renderExpensetable(){
+    expenseTableBody.innerHTML = ""; // clear existing rows
+    expenses.forEach(expense =>{
+        const formattedAmount = expense.amount < 0 ?
+        `-$${Math.abs(expense.amount).toFixed(2)}` : 
+            `$${expense.amount.toFixed(2)}`;
+
+    // add a new row to the table with each formatted value
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+    <td>${categoryValue}</td>
+    <td>${formattedAmount}</td>
+    <td>${dateValue}</td>
+    <td><button class="delete-btn">Delete</button></td>`;
+    
+
+     // delete functionality 
+     newRow.querySelector('.delete-btn').addEventListener('click', function(){
+        expenses = expenses.filter(e => e !==expense);
+        totalAmount -= amountValue;
+        totalAmountCell.textContent = `$${totalAmount.toFixed(2)}`;
+        newRow.remove();
+        updateChartData();
+        populateUl();
+            });
+        });
+
+    expenseTableBody.append(newRow);
+}
+
 
 
 
