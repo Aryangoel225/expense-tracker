@@ -95,7 +95,7 @@ addBtn.addEventListener('click', function(){
         return;
     }
     //  add expenses to the list
-    const expense = {category: categoryValue, amount: amountValue, data: dateValue};
+    const expense = {category: categoryValue, amount: amountValue, date: dateValue};
     expenses.push(expense);
     totalAmount += amountValue;
 
