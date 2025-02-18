@@ -66,7 +66,7 @@ const myChart = new Chart(document.querySelector(".my-chart"), {
 });
 
 
-
+// Function to update UI list with percentages
 const populateUl = () => {
     // clear existing list items
    ul.innerHTML = "";
@@ -82,6 +82,7 @@ const populateUl = () => {
     });
   };
   
+// Ensure UI starts correctly
 populateUl();
 
 // add btn functions
@@ -99,6 +100,7 @@ addBtn.addEventListener('click', function(){
         alert("Please enter a valid amount or date");
         return;
     }
+
     //  add expenses to the list
     const expense = {category: categoryValue, amount: amountValue, date: dateValue};
     expenses.push(expense);
@@ -133,7 +135,7 @@ addBtn.addEventListener('click', function(){
     updateChartData();
     populateUl();
 
-    });
+});
 
     // add new row
     expenseTableBody.append(newRow);
@@ -147,115 +149,71 @@ addBtn.addEventListener('click', function(){
     date.value = "";
 });
 
-sortByName.addEventListener('click', function(){
-    const expensesCopy = [...expenses];
-    expenses = sortByName(expensesCopy);
-    renderExpensetable()
+// Sorting functions
+sortByName.addEventListener('click', function() {
+    expenses = sortName([...expenses]);
+    renderExpensetable();
 });
 
-sortByAmount.addEventListener('click', function(){
-    const expensesCopy = [...expenses];
-    expenses = sortByAmount(expensesCopy);
-    renderExpensetable()
+sortByAmount.addEventListener('click', function() {
+    expenses = sortAmount([...expenses]);
+    renderExpensetable();
 });
 
-sortByDate.addEventListener('click', function(){
-    const expensesCopy = [...expenses];
-    expenses = sortByDate(expensesCopy);
-    renderExpensetable()
+sortByDate.addEventListener('click', function() {
+    expenses = expenses.sort((a, b) => new Date(a.date) - new Date(b.date));
+    renderExpensetable();
 });
 
-function renderExpensetable(){
-    expenseTableBody.innerHTML = ""; // clear existing rows
-    expenses.forEach(expense =>{
+// Function to render table
+function renderExpensetable() {
+    expenseTableBody.innerHTML = ""; // Clear existing rows
+
+    expenses.forEach(expense => {
         const formattedAmount = expense.amount < 0 ?
-        `-$${Math.abs(expense.amount).toFixed(2)}` : 
+            `-$${Math.abs(expense.amount).toFixed(2)}` :
             `$${expense.amount.toFixed(2)}`;
 
-    // add a new row to the table with each formatted value
-    const newRow = document.createElement("tr");
-    newRow.innerHTML = `
-    <td>${categoryValue}</td>
-    <td>${formattedAmount}</td>
-    <td>${dateValue}</td>
-    <td><button class="delete-btn">Delete</button></td>`;
-    
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${expense.category}</td>
+            <td>${formattedAmount}</td>
+            <td>${expense.date}</td>
+            <td><button class="delete-btn">Delete</button></td>`;
 
-     // delete functionality 
-     newRow.querySelector('.delete-btn').addEventListener('click', function(){
-        expenses = expenses.filter(e => e !==expense);
-        totalAmount -= amountValue;
-        totalAmountCell.textContent = `$${totalAmount.toFixed(2)}`;
-        newRow.remove();
-        updateChartData();
-        populateUl();
-            });
+        newRow.querySelector('.delete-btn').addEventListener('click', function() {
+            expenses = expenses.filter(e => e.date !== expense.date || e.amount !== expense.amount || e.category !== expense.category);
+            totalAmount -= expense.amount;
+            totalAmountCell.textContent = `$${totalAmount.toFixed(2)}`;
+            newRow.remove();
+            updateChartData();
+            populateUl();
         });
 
-    expenseTableBody.append(newRow);
-
+        expenseTableBody.appendChild(newRow);
+    });
 }
 
-
-
-function sortAmount(arr){
-    for (let i = 1; i < arr.length; i++) {
-        let temp = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j].getAmount() > temp.getAmount()) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = temp;
-    }
+// Sorting functions
+function sortAmount(list) {
+    return list.sort((a, b) => a.amount - b.amount);
 }
 
-function sortName(arr){
-    for (let i = 1; i < arr.length; i++) {
-        let temp = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j].localeCompare(temp) > 0) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = temp;
-    }
-  
-function dateStrToObj(dateStr){
-    let newDateValue = dateStr;
-    const monthStr = newDateValue.substring(0, newDateValue.indexOf("/"));
-    newDateValue = substring(monthStr.length - 1);
-    const month = parseInt(monthStr);
-    const dayStr = newDateValue.substring(0, newDateValue.indexOf("/"));
-    newDateValue = substring(dayStr.length - 1);
-    const day = parseInt(dayStr);
-    const yearStr = newDateValue;
-    const year = parseInt(yearStr);
-    const dateObj = {month, day, year};
-    return dateObj;
+function sortName(list) {
+    return list.sort((a, b) => a.category.localeCompare(b.category));
 }
 
-function sortDate(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let temp = arr[i];
-        let j = i - 1;
-
-        while (j >= 0 && compareDates(arr[j].getDate(), temp.getDate()) > 0) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = temp;
-    }
+// Corrected date conversion function
+function dateStrToObj(dateStr) {
+    const [month, day, year] = dateStr.split("/").map(Number);
+    return new Date(year, month - 1, day); // Convert to Date object
 }
 
+// Date comparison function
 function compareDates(date1, date2) {
-    if (date1.getYear() !== date2.getYear()) {
-        return date1.getYear() - date2.getYear();
-    }
-    if (date1.getMonth() !== date2.getMonth()) {
-        return date1.getMonth() - date2.getMonth();
-    }
-    return date1.getDay() - date2.getDay();
+    return new Date(date1) - new Date(date2);
 }
+
+
 
 
