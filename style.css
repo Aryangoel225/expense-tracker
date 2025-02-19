@@ -154,3 +154,14 @@ h1 , h2{
     background-color: #3e8e41;
     color: white;
   }
+  
+  #get-tips-button {
+    padding: 5px 10px;
+    background-color: #af4c4c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+  }

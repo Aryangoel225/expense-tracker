@@ -215,5 +215,81 @@ function compareDates(date1, date2) {
 }
 
 
+// tip button
+const tipsButton = document.getElementById("get-tips-button");
+tipsButton.addEventListener('click', function(){
+    feedback();
+});
+// define budgetLimit
+let income = 2000
+let budgetLimit = income * 0.8;
 
+ // print alerts based on highest expense section
+function feedback(){
+    // Check if there are any expenses
+    if (chartData.data.length === 0 || !chartData.data.some(num => num > 0)) {
+        alert("No expenses recorded yet!");
+        return;
+    }
 
+    let highestCategory = chartData.labels[chartData.data.indexOf(Math.max(...chartData.data))]
+    alert(`Your highest expense is ${highestCategory}`);
+
+    setTimeout(() => {
+        if (expenses && expenses.length >= 3) {  // Ensure expenses exists
+            let message = "";
+            switch (highestCategory) {
+                case "Home & Utilities":
+                    message = "💡 Tip: Turning off unused lights can save you money!";
+                    break;
+                case "Transportation":
+                    message = "🚗 Tip: Reducing unnecessary trips and driving efficiently saves gas!";
+                    break;
+                case "Groceries":
+                    message = "🛒 Tip: Meal planning helps avoid impulse spending on groceries!";
+                    break;
+                case "Restaurants":
+                    message = "🍽 Tip: Cooking at home is healthier and more budget-friendly!";
+                    break;
+                case "Health":
+                    message = "🍎 Tip: Staying active and eating healthy can lower future medical bills!";
+                    break;
+                case "Shopping":
+                    message = "💰 Tip: Set a spending limit to avoid overspending on shopping.";
+                    break;
+                default:
+                    message = "📊 Tip: Consider reviewing your expenses and optimizing your spending habits.";
+                    break;
+            }
+            alert(message);
+        }
+    
+        // Budget warning
+        if (totalAmount >= budgetLimit) {
+            alert("🚨 Warning: You've exceeded your budget!");
+        } else if (totalAmount > budgetLimit * 0.9) {
+            alert("⚠️ Warning: You're close to exceeding your budget!");
+        }
+    }, 500);
+
+}
+
+// income button
+const incomeBtn = document.getElementById("set-income-button");
+ // function of income button 
+incomeBtn.addEventListener("click", function(){
+    let incomeInput = document.getElementById("income-input").value;
+
+    // Convert input to a number and check if it's valid
+    let newIncome = parseFloat(incomeInput);
+    if (isNaN(newIncome) || newIncome <= 0) {
+        alert("❌ Please enter a valid income amount!");
+        return;
+    }
+    income = newIncome;
+    budgetLimit = income * 0.8;
+
+    document.getElementById("income-display").textContent = `Current Income: $${income.toFixed(2)}`;
+
+    incomeInput.value = "";
+});
